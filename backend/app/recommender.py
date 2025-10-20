@@ -12,6 +12,7 @@ class Recommender:
         self.validate_columns()              
         self.coerce_and_fillna() 
         self.normalize_tempo()
+        self.prepare_features()
     
     def load_data(self) -> pd.DataFrame:
         try:
@@ -21,8 +22,7 @@ class Recommender:
             raise FileNotFoundError(f"Could not find the file: {self.csv_path}")
         except Exception as e:
             raise RuntimeError(f"Error while reading the csv file: {e}")
-#print(reco.load_data())
-
+        #print(reco.load_data())
 
     def validate_columns(self):
         required_columns = ["track_name", "artist", "energy", "danceability", "valence", "tempo"]
@@ -41,7 +41,7 @@ class Recommender:
         else:
             print("✅ CSV matched successfully — all required columns are present.")
 
-    #print(reco.validate_columns())
+        #print(reco.validate_columns())
 
     def coerce_and_fillna(self):
         numeric_cols = ["energy", "danceability", "valence", "tempo"]
@@ -101,11 +101,36 @@ class Recommender:
         scaler = MinMaxScaler()
         self.df["tempo_normalized"] = scaler.fit_transform(self.df[["tempo"]])
 
+    def prepare_features(self):
+        useful_features = self.df[["energy", "danceability", "valence", "tempo"]]
+        self.features_matrix = useful_features.to_numpy()
+        print("🔹 Feature matrix shape:", self.features_matrix.shape)
+
+    def make_user_vector(self,user_data):
+        keys = ["energy", "danceability", "valence", "tempo"]
+        user_list=[]
+        for key in keys:
+            user_list.append(user_data[key])
+        user_vector = np.array([user_list], dtype=float)
+        return user_vector
+
+    def recommend(self,user_data):
+        user_input = self.make_user_vector(user_data)
+        print(user_input.shape)
+
 reco = Recommender(csv_path="../data/songs.csv")
 
-x=reco.df[["tempo", "tempo_normalized"]].head()
 
-print(x)
+
+
+
+print(reco.recommend({"energy": 0.8,"danceability": 0.7,"valence": 0.6,"tempo": 0.4}))
+
+
+
+#metoda recommend wykorzystujaca cosine_similarity
+
+#test na danych
 
 
 
