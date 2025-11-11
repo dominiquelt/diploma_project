@@ -29,3 +29,10 @@ class TrackOut(BaseModel):
 
 class RecommendResponse(BaseModel):
     results: List[TrackOut]
+
+
+class UserInput(BaseModel):
+    energy: float
+    danceability: float
+    valence: float
+    tempo: float

@@ -3,6 +3,18 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from dataclasses import dataclass
 from sklearn.preprocessing import MinMaxScaler
+from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+# Załaduj plik .env z katalogu backend/
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+# Pobierz ścieżkę CSV z .env lub ustaw domyślną
+csv_env = os.getenv("CSV_PATH", "data/songs.csv")
+
+# Zbuduj pełną ścieżkę do pliku CSV
+csv_path = Path(__file__).resolve().parent.parent / csv_env
 
 
 class Recommender:
@@ -102,7 +114,7 @@ class Recommender:
         self.df["tempo_normalized"] = scaler.fit_transform(self.df[["tempo"]])
 
     def prepare_features(self):
-        useful_features = self.df[["energy", "danceability", "valence", "tempo"]]
+        useful_features = self.df[["energy", "danceability", "valence", "tempo_normalized"]]
         self.features_matrix = useful_features.to_numpy()
         print("🔹 Feature matrix shape:", self.features_matrix.shape)
 
@@ -114,17 +126,36 @@ class Recommender:
         user_vector = np.array([user_list], dtype=float)
         return user_vector
 
-    def recommend(self,user_data):
+    def recommend(self, user_data):
         user_input = self.make_user_vector(user_data)
-        print(user_input.shape)
+        similarity = cosine_similarity(user_input, self.features_matrix)
+        closest_index = np.argmax(similarity)
+        best_similarity = similarity[0][closest_index]
+        
+        first_output = self.df.iloc[closest_index]
+        song_data = first_output.to_dict()
+        
+        result = {
+            "track_name": song_data["track_name"],
+            "artist": song_data["artist"],
+            "similarity": round(float(best_similarity), 3)
+        }
+        return result
 
-reco = Recommender(csv_path="../data/songs.csv")
+
+reco = Recommender(csv_path=csv_path)
+
+print(reco.features_matrix[:5])
 
 
 
+print(reco.recommend({
+    "energy": 0.32,
+    "danceability": 0.4,
+    "valence": 0.8,
+    "tempo": 0.1
+}))
 
-
-print(reco.recommend({"energy": 0.8,"danceability": 0.7,"valence": 0.6,"tempo": 0.4}))
 
 
 
