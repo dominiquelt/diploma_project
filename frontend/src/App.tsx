@@ -1,5 +1,6 @@
 import { useState } from "react";
 import WelcomeScreen from "./screens/Welcome";
+import SlidersScreen from "./screens/Sliders";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("welcome");
@@ -9,7 +10,7 @@ function App() {
       {currentScreen === "welcome" && (
         <WelcomeScreen onNext={() => setCurrentScreen("sliders")} />
       )}
-      {currentScreen === "sliders" && <p>Sliders screen placeholder</p>}
+      {currentScreen === "sliders" && <SlidersScreen onNext={() => setCurrentScreen("results")} />}
     </>
   );
 }
