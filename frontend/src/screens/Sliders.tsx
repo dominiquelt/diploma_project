@@ -11,15 +11,25 @@ export default function SlidersScreen({ onNext }: Props) {
   const [valence, setValence] = useState(0.5);
   const [tempo, setTempo] = useState(120);
 
-  const handleRecommend = () => {
-    console.log({
+  const handleRecommend = async () => {
+  const response = await fetch("http://127.0.0.1:8000/recommend", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
       energy,
       danceability,
       valence,
       tempo,
-    });
-    onNext(); // przechodzimy dalej np. do ekranu z wynikiem
-  };
+    }),
+  });
+
+  const data = await response.json();
+
+  console.log("🎵 Rekomendacja:", data);
+
+  onNext();
+};
+
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-bgLight text-textMain px-8">
