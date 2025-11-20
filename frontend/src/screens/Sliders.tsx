@@ -12,23 +12,27 @@ export default function SlidersScreen({ onNext }: Props) {
   const [tempo, setTempo] = useState(120);
 
   const handleRecommend = async () => {
-  const response = await fetch("http://127.0.0.1:8000/recommend", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      energy,
-      danceability,
-      valence,
-      tempo,
-    }),
-  });
+    const response = await fetch("http://127.0.0.1:8000/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        energy,
+        danceability,
+        valence,
+        tempo,
+        }),
+    });
 
-  const data = await response.json();
+    // 1️⃣ odbierz dane z backendu
+    const data = await response.json();
 
-  console.log("🎵 Rekomendacja:", data);
+    // 2️⃣ zobacz co backend zwrócił
+    console.log("🎵 Rekomendacja:", data);
 
-  onNext();
-};
+    // 3️⃣ przejdź dalej (np. do ekranu wyników)
+    onNext();
+    };
+
 
 
   return (
