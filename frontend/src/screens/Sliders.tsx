@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SliderInput from "../components/SlidersInput";
 
 type Props = {
-  onNext: () => void;
+  onNext: (data: any) => void;
 };
 
 export default function SlidersScreen({ onNext }: Props) {
@@ -11,29 +11,38 @@ export default function SlidersScreen({ onNext }: Props) {
   const [valence, setValence] = useState(0.5);
   const [tempo, setTempo] = useState(120);
 
+  // 🧹 reset suwaków po każdym ponownym wejściu na ekran
+  useEffect(() => {
+    setEnergy(0.5);
+    setDanceability(0.5);
+    setValence(0.5);
+    setTempo(120);
+  }, []);
+
   const handleRecommend = async () => {
+
+    console.log("🧭 Wysyłam do backendu:", {
+      energy,
+      danceability,
+      valence,
+      tempo,
+    });
+
     const response = await fetch("http://127.0.0.1:8000/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         energy,
         danceability,
         valence,
         tempo,
-        }),
+      }),
     });
 
-    // 1️⃣ odbierz dane z backendu
     const data = await response.json();
-
-    // 2️⃣ zobacz co backend zwrócił
     console.log("🎵 Rekomendacja:", data);
-
-    // 3️⃣ przejdź dalej (np. do ekranu wyników)
-    onNext();
-    };
-
-
+    onNext(data);
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-bgLight text-textMain px-8">

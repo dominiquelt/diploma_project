@@ -118,13 +118,21 @@ class Recommender:
         self.features_matrix = useful_features.to_numpy()
         print("🔹 Feature matrix shape:", self.features_matrix.shape)
 
-    def make_user_vector(self,user_data):
-        keys = ["energy", "danceability", "valence", "tempo"]
-        user_list=[]
-        for key in keys:
-            user_list.append(user_data[key])
-        user_vector = np.array([user_list], dtype=float)
+    def make_user_vector(self, user_data):
+        # Skaluj tempo użytkownika do 0–1 (tak jak w prepare_features)
+        tempo_min, tempo_max = 30, 250
+        tempo_norm = (user_data["tempo"] - tempo_min) / (tempo_max - tempo_min)
+        tempo_norm = np.clip(tempo_norm, 0, 1)
+
+        user_vector = np.array([[
+            user_data["energy"],
+            user_data["danceability"],
+            user_data["valence"],
+            tempo_norm
+        ]], dtype=float)
+
         return user_vector
+
 
     def recommend(self, user_data):
         user_input = self.make_user_vector(user_data)
