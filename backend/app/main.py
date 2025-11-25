@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.recommender import Recommender
-from app.schemas import UserInput 
+from app.schemas import UserInput
+from app.auth.routes import router as auth_router  # ⬅️ DODANE
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -30,7 +31,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 7️⃣ Endpointy
+# 7️⃣ Rejestracja routera dla autoryzacji
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])  # ⬅️ DODANE
+
+# 8️⃣ Endpointy
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -50,4 +54,3 @@ def features():
 async def recommend(user_data: UserInput):
     result = reco.recommend(user_data.dict())
     return result
-
