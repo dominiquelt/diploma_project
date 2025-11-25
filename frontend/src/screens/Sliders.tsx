@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SliderInput from "../components/SlidersInput";
+import { fetchRecommendation } from "../api/recommend";
 
 type Props = {
   onNext: (data: any) => void;
@@ -11,7 +12,7 @@ export default function SlidersScreen({ onNext }: Props) {
   const [valence, setValence] = useState(0.5);
   const [tempo, setTempo] = useState(120);
 
-  // 🧹 reset suwaków po każdym ponownym wejściu na ekran
+  // 🧹 Reset suwaków po każdym ponownym wejściu na ekran
   useEffect(() => {
     setEnergy(0.5);
     setDanceability(0.5);
@@ -20,28 +21,17 @@ export default function SlidersScreen({ onNext }: Props) {
   }, []);
 
   const handleRecommend = async () => {
+    const userData = { energy, danceability, valence, tempo };
+    console.log("🧭 Wysyłam do backendu:", userData);
 
-    console.log("🧭 Wysyłam do backendu:", {
-      energy,
-      danceability,
-      valence,
-      tempo,
-    });
-
-    const response = await fetch("http://127.0.0.1:8000/recommend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        energy,
-        danceability,
-        valence,
-        tempo,
-      }),
-    });
-
-    const data = await response.json();
-    console.log("🎵 Rekomendacja:", data);
-    onNext(data);
+    try {
+      const data = await fetchRecommendation(userData);
+      console.log("🎵 Rekomendacja:", data);
+      onNext(data);
+    } catch (error) {
+      console.error("❌ Błąd przy pobieraniu rekomendacji:", error);
+      alert("Nie udało się pobrać rekomendacji. Sprawdź backend!");
+    }
   };
 
   return (
