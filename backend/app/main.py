@@ -6,6 +6,9 @@ from app.auth.routes import router as auth_router  # ⬅️ DODANE
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from app.auth.dependencies import get_current_user
+from fastapi import Depends
+from app.favorites.routes import router as fav_router
 
 # 1️⃣ Wczytaj plik .env z katalogu backend/
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
@@ -32,7 +35,9 @@ app.add_middleware(
 )
 
 # 7️⃣ Rejestracja routera dla autoryzacji
-app.include_router(auth_router, prefix="/auth", tags=["Auth"])  # ⬅️ DODANE
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])  # ⬅️ 
+
+app.include_router(fav_router, prefix="/favorites",tags=["Favorites"])
 
 # 8️⃣ Endpointy
 @app.get("/health")
@@ -54,3 +59,8 @@ def features():
 async def recommend(user_data: UserInput):
     result = reco.recommend(user_data.dict())
     return result
+
+#testowy
+@app.get("/protected")
+def protected_route(current_user: dict = Depends(get_current_user)):
+    return {"message": "You are authorized!", "user": current_user}
