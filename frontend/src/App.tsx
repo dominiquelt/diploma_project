@@ -1,26 +1,29 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import WelcomeScreen from "./screens/Welcome";
 import SlidersScreen from "./screens/Sliders";
 import ResultsScreen from "./screens/Results";
+import LoginScreen from "./screens/LoginScreen";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-function App() {
+function MainApp() {
+  const { token } = useAuth();
+
+  // 🔒 jeśli brak tokena — pokazujemy ekran logowania
+  if (!token) {
+    return <LoginScreen onSuccess={() => {}} />;
+  }
+
+  // 🎵 po zalogowaniu działa Twój obecny flow
   const [currentScreen, setCurrentScreen] = useState("welcome");
   const [recommendation, setRecommendation] = useState<{
     track_name: string;
     artist: string;
     similarity: number;
   } | null>(null);
-  const [resetCounter, setResetCounter] = useState(0);
 
   const handleRecommendation = (data: any) => {
     setRecommendation(data);
     setCurrentScreen("results");
-  };
-
-  const handleTryAgain = () => {
-    setRecommendation(null);   
-    setResetCounter(prev => prev + 1); // 👈 zwiększa licznik przy każdym "try again"
-    setCurrentScreen("sliders");
   };
 
   return (
@@ -38,15 +41,17 @@ function App() {
           track_name={recommendation.track_name}
           artist={recommendation.artist}
           similarity={recommendation.similarity}
-          onRestart={() => {
-            setRecommendation(null);
-            setCurrentScreen("sliders");
-          }}
+          onRestart={() => setCurrentScreen("sliders")}
         />
       )}
-
     </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
+  );
+}
