@@ -6,18 +6,18 @@ export async function addFavorite(
   similarity: number,
   token: string
 ) {
-  const res = await fetch(
-    `${API_URL}/favorites/add?track_name=${track_name}&artist=${artist}&similarity=${similarity}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const res = await fetch(`${API_URL}/favorites/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ track_name, artist, similarity }),
+  });
 
   if (!res.ok) {
-    throw new Error("Failed to add favorite");
+    const errMsg = await res.text();
+    throw new Error("Failed to add favorite: " + errMsg);
   }
 
   return await res.json();
@@ -32,6 +32,25 @@ export async function getFavorites(token: string) {
 
   if (!res.ok) {
     throw new Error("Failed to fetch favorites");
+  }
+
+  return await res.json();
+}
+
+export async function removeFavorite(track_name: string, artist: string, token: string) {
+  const res = await fetch(
+    `${API_URL}/favorites/remove?track_name=${encodeURIComponent(track_name)}&artist=${encodeURIComponent(artist)}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const errMsg = await res.text();
+    throw new Error("Failed to remove favorite: " + errMsg);
   }
 
   return await res.json();

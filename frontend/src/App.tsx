@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import WelcomeScreen from "./screens/Welcome";
 import SlidersScreen from "./screens/Sliders";
 import ResultsScreen from "./screens/Results";
+import FavoritesScreen from "./screens/Favorites";
 import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/Register";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function MainApp() {
   const { token } = useAuth();
+  console.log("🧩 token:", token);
 
-  // 🔒 jeśli brak tokena — pokazujemy ekran logowania
-  if (!token) {
-    return <LoginScreen onSuccess={() => {}} />;
-  }
-
-  // 🎵 po zalogowaniu działa Twój obecny flow
-  const [currentScreen, setCurrentScreen] = useState("welcome");
+  // 🔹 Ustal ekran startowy (jeśli użytkownik ma token — zaczynamy od welcome)
+  const [currentScreen, setCurrentScreen] = useState(token ? "welcome" : "login");
   const [recommendation, setRecommendation] = useState<{
     track_name: string;
     artist: string;
@@ -26,6 +24,21 @@ function MainApp() {
     setCurrentScreen("results");
   };
 
+  // 🔹 Ekrany logowania / rejestracji
+  if (!token) {
+    if (currentScreen === "register") {
+      return <RegisterScreen onSuccess={() => setCurrentScreen("login")} />;
+    }
+
+    return (
+      <LoginScreen
+        onSuccess={() => setCurrentScreen("welcome")}
+        onRegister={() => setCurrentScreen("register")}
+      />
+    );
+  }
+
+  // 🔹 Po zalogowaniu — flow aplikacji
   return (
     <>
       {currentScreen === "welcome" && (
@@ -42,12 +55,18 @@ function MainApp() {
           artist={recommendation.artist}
           similarity={recommendation.similarity}
           onRestart={() => setCurrentScreen("sliders")}
+          onShowFavorites={() => setCurrentScreen("favorites")}
         />
+      )}
+
+      {currentScreen === "favorites" && (
+        <FavoritesScreen onBack={() => setCurrentScreen("welcome")} />
       )}
     </>
   );
 }
 
+// 🔹 Główny komponent — otacza aplikację kontekstem autoryzacji (trzyma token)
 export default function App() {
   return (
     <AuthProvider>
