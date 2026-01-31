@@ -51,7 +51,7 @@ class Recommender:
         if extra:
             print(f"⚠️ Warning: Extra columns found (ignored): {extra}")
         else:
-            print("✅ CSV matched successfully — all required columns are present.")
+            print("✅")
 
         #print(reco.validate_columns())
 
@@ -116,10 +116,9 @@ class Recommender:
     def prepare_features(self):
         useful_features = self.df[["energy", "danceability", "valence", "tempo_normalized"]]
         self.features_matrix = useful_features.to_numpy()
-        print("🔹 Feature matrix shape:", self.features_matrix.shape)
+        #print("🔹 Feature matrix shape:", self.features_matrix.shape)
 
     def make_user_vector(self, user_data):
-        # Skaluj tempo użytkownika do 0–1 (tak jak w prepare_features)
         tempo_min, tempo_max = 30, 250
         tempo_norm = (user_data["tempo"] - tempo_min) / (tempo_max - tempo_min)
         tempo_norm = np.clip(tempo_norm, 0, 1)
@@ -153,16 +152,16 @@ class Recommender:
 
 reco = Recommender(csv_path=csv_path)
 
-print(reco.features_matrix[:5])
+#print(reco.features_matrix[:5])
 
 
 
-print(reco.recommend({
-    "energy": 0.32,
-    "danceability": 0.4,
-    "valence": 0.8,
-    "tempo": 0.1
-}))
+#print(reco.recommend({
+  #  "energy": 0.32,
+   # "danceability": 0.4,
+   # "valence": 0.8,
+   ## "tempo": 0.1
+#}))
 
 
 

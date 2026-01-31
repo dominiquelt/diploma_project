@@ -17,4 +17,4 @@ for c in ["energy","danceability","valence"]:
 
 assert (reco.df["tempo"] >= 30).all() and (reco.df["tempo"] <= 250).all(), "Tempo poza [30,250]"
 
-print("✅ Wszystkie testy przeszły")
+print("✅ Wszystkie testy pozytywne")
