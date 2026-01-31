@@ -46,7 +46,7 @@ export default function LoginScreen({ onSuccess, onRegister }: LoginScreenProps)
         Log in
       </button>
 
-      {/* 🔹 Link do rejestracji */}
+      {/* link do rejestracji */}
       <p className="mt-4 text-sm text-gray-600">
         Don’t have an account?{" "}
         <span

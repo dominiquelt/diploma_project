@@ -7,13 +7,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-# Załaduj plik .env z katalogu backend/
+
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-# Pobierz ścieżkę CSV z .env lub ustaw domyślną
+
 csv_env = os.getenv("CSV_PATH", "data/songs.csv")
 
-# Zbuduj pełną ścieżkę do pliku CSV
+
 csv_path = Path(__file__).resolve().parent.parent / csv_env
 
 

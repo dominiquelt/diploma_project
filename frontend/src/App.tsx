@@ -24,7 +24,7 @@ function MainApp() {
     setCurrentScreen("results");
   };
 
-  // 🔹 Ekrany logowania / rejestracji
+  // ekrany logowania / rejestracji
   if (!token) {
     if (currentScreen === "register") {
       return <RegisterScreen onSuccess={() => setCurrentScreen("login")} />;
@@ -38,7 +38,7 @@ function MainApp() {
     );
   }
 
-  // 🔹 Po zalogowaniu — flow aplikacji
+  // po zalogowaniu — flow aplikacji
   return (
     <>
       {currentScreen === "welcome" && (
@@ -66,7 +66,7 @@ function MainApp() {
   );
 }
 
-// 🔹 Główny komponent — otacza aplikację kontekstem autoryzacji (trzyma token)
+//  otacza aplikację kontekstem autoryzacji (trzyma token)
 export default function App() {
   return (
     <AuthProvider>

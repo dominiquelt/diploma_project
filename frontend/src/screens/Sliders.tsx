@@ -12,7 +12,7 @@ export default function SlidersScreen({ onNext }: Props) {
   const [valence, setValence] = useState(0.5);
   const [tempo, setTempo] = useState(120);
 
-  // 🧹 Reset suwaków po każdym ponownym wejściu na ekran
+  // resett suwaków po każdym ponownym wejściu na ekran
   useEffect(() => {
     setEnergy(0.5);
     setDanceability(0.5);

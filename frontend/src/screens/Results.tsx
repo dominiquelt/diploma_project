@@ -6,7 +6,7 @@ type Props = {
   artist: string;
   similarity: number;
   onRestart: () => void;
-  onShowFavorites: () => void; // 👈 dodany nowy props
+  onShowFavorites: () => void; 
 };
 
 export default function ResultScreen({
@@ -14,7 +14,7 @@ export default function ResultScreen({
   artist,
   similarity,
   onRestart,
-  onShowFavorites, // 👈 dodany tutaj też
+  onShowFavorites, 
 }: Props) {
   const { token } = useAuth();
 

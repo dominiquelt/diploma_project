@@ -13,7 +13,7 @@ export default function FavoritesScreen({ onBack }: { onBack: () => void }) {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Pobranie ulubionych przy starcie
+  // pobranie ulubionych przy starcie
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!token) return;
@@ -30,7 +30,7 @@ export default function FavoritesScreen({ onBack }: { onBack: () => void }) {
     fetchFavorites();
   }, [token]);
 
-  // 🔹 Usuwanie ulubionej piosenki
+  // usuwanie ulubionej piosenki
   const handleRemove = async (track_name: string, artist: string) => {
     if (!token) return;
     const confirmDelete = confirm(`Remove "${track_name}" by ${artist} from favorites?`);

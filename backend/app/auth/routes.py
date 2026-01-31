@@ -17,15 +17,15 @@ def get_db():
 
 @router.post("/register")
 def register_user(email: str, username: str, password: str, db: Session = Depends(get_db)):
-    # 1. Sprawdź, czy użytkownik istnieje
+    #  czy użytkownik istnieje
     existing_user = db.query(User).filter(User.email == email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    # 2. Zaszyfruj hasło
+    #  hasło
     hashed = hash_password(password)
 
-    # 3. Stwórz nowego usera
+    #  nowy user
     new_user = User(email=email, username=username, hashed_password=hashed)
     db.add(new_user)
     db.commit()

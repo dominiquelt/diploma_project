@@ -66,11 +66,11 @@ def list_favorites(
         .all()
     )
 
-    # Jeśli użytkownik nie ma żadnych ulubionych, zwróć pustą listę
+    # zwróć pustą listę
     if not favorites:
         return []
 
-    # Zamień obiekty SQLAlchemy na słowniki (JSON-friendly)
+    
     return [
         {
             "track_name": fav.track_name,

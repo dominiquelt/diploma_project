@@ -9,22 +9,22 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // 🔹 Inicjalnie sprawdza, czy token jest w localStorage
+  // czy token jest w localStorage
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
 
-  // 🔹 Funkcja logowania – zapisuje token w stanie i w localStorage
+  //  zapisuje token w stanie i w localStorage
   const login = (t: string) => {
     setToken(t);
     localStorage.setItem("token", t);
   };
 
-  // 🔹 Funkcja wylogowania – usuwa token
+  //  usuwa token
   const logout = () => {
     setToken(null);
     localStorage.removeItem("token");
   };
 
-  // 🔹 Synchronizacja (na wypadek ręcznego usunięcia tokena)
+
   useEffect(() => {
     const stored = localStorage.getItem("token");
     if (stored !== token) setToken(stored);

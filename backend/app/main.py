@@ -10,36 +10,36 @@ from app.auth.dependencies import get_current_user
 from fastapi import Depends
 from app.favorites.routes import router as fav_router
 
-# 1️⃣ Wczytaj plik .env z katalogu backend/
+#  plik .env z katalogu backend/
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-# 2️⃣ Pobierz ścieżkę z .env (lub ustaw domyślną)
+#  ścieżkę z .env 
 csv_env = os.getenv("CSV_PATH", "data/songs.csv")
 
-# 3️⃣ Zbuduj pełną ścieżkę absolutną do CSV
+
 csv_path = Path(__file__).resolve().parent.parent / csv_env
 
-# 4️⃣ Inicjalizuj model rekomendacji
+#  model rekomendacji
 reco = Recommender(csv_path=csv_path)
 
-# 5️⃣ Utwórz aplikację FastAPI
+#  FastAPI
 app = FastAPI(title="Music Recommender App")
 
-# 6️⃣ Middleware dla CORS (frontend)
+# middleware dla CORS (frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 👈 można ograniczyć np. do ["http://localhost:5174"]
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 7️⃣ Rejestracja routera dla autoryzacji
+#  router dla autoryzacji
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])  # ⬅️ 
 
 app.include_router(fav_router, prefix="/favorites",tags=["Favorites"])
 
-# 8️⃣ Endpointy
+# endpointy
 @app.get("/health")
 def health():
     return {"status": "ok"}
